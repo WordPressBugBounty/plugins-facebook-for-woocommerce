@@ -175,6 +175,8 @@ jQuery( document ).ready( function( $ ) {
 				nonce:  facebook_for_woocommerce_settings_sync.sync_products_nonce,
 			}, function ( response ) {
 
+				console.log( response );
+
 				if ( ! response.success ) {
 
 					let error = facebook_for_woocommerce_settings_sync.i18n.general_error;

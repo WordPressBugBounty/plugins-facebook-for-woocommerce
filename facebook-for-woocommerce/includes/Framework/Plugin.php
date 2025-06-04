@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile
 /**
  * Facebook for WooCommerce.
  */
@@ -9,7 +10,7 @@ use WC_Logger;
 use WooCommerce\Facebook\Framework\Plugin\Compatibility;
 use WooCommerce\Facebook\Framework\Plugin\Dependencies;
 
-defined( 'ABSPATH' ) || exit;
+defined( 'ABSPATH' ) or exit;
 
 /**
  * # WooCommerce Plugin Framework
@@ -65,11 +66,6 @@ abstract class Plugin {
 	/** @var AdminNoticeHandler the admin notice handler class */
 	private $admin_notice_handler;
 
-	/** @var BatchLogHandler the batch log handler class */
-	private $batch_log_handler;
-
-	/** @var ErrorLogHandler the error log handler class */
-	private $error_log_handler;
 
 	/**
 	 * Initialize the plugin.
@@ -80,7 +76,7 @@ abstract class Plugin {
 	 *
 	 * @param string $id plugin id
 	 * @param string $version plugin version number
-	 * @param array  $args {
+	 * @param array $args {
 	 *     optional plugin arguments
 	 *
 	 *     @type int|float $latest_wc_versions the last supported versions of WooCommerce, as a major.minor float relative to the latest available version
@@ -99,14 +95,11 @@ abstract class Plugin {
 		$this->id      = $id;
 		$this->version = $version;
 
-		$args = wp_parse_args(
-			$args,
-			[
-				'min_wc_semver' => 0.2, // by default, 2 minor versions behind the latest published are supported
-				'text_domain'   => '',
-				'dependencies'  => [],
-			]
-		);
+		$args = wp_parse_args( $args, [
+			'min_wc_semver' => 0.2, // by default, 2 minor versions behind the latest published are supported
+			'text_domain'   => '',
+			'dependencies'  => [],
+		] );
 
 		$this->min_wc_semver = is_numeric( $args['min_wc_semver'] ) ? abs( $args['min_wc_semver'] ) : null;
 		$this->text_domain   = $args['text_domain'];
@@ -125,12 +118,6 @@ abstract class Plugin {
 
 		// add the action & filter hooks
 		$this->add_hooks();
-
-		// build the batch log handler instance
-		$this->init_batch_log_handler();
-
-		// build the error log handler instance
-		$this->init_error_log_handler();
 	}
 
 
@@ -189,23 +176,6 @@ abstract class Plugin {
 		$this->lifecycle_handler = new \WooCommerce\Facebook\Lifecycle( $this );
 	}
 
-	/**
-	 * Builds the batch log handler instance.
-	 *
-	 * @since 3.5.0
-	 */
-	protected function init_batch_log_handler() {
-		$this->batch_log_handler = new BatchLogHandler();
-	}
-
-	/**
-	 * Builds the error log handler instance.
-	 *
-	 * @since 3.5.0
-	 */
-	protected function init_error_log_handler() {
-		$this->error_log_handler = new ErrorLogHandler();
-	}
 
 	/**
 	 * Adds the action & filter hooks.
@@ -340,15 +310,14 @@ abstract class Plugin {
 		}
 
 		// grab latest published version
-		$latest_wc_version    = current( $latest_wc_versions );
-		$supported_wc_version = $latest_wc_version;
+		$supported_wc_version = $latest_wc_version = current( $latest_wc_versions );
 
 		// grab semver parts
-		$latest_semver    = explode( '.', $latest_wc_version );
-		$supported_semver = explode( '.', (string) $this->min_wc_semver );
-		$supported_major  = max( 0, (int) $latest_semver[0] - (int) $supported_semver[0] );
-		$supported_minor  = isset( $supported_semver[1] ) ? (int) $supported_semver[1] : 0;
-		$previous_minor   = null;
+		$latest_semver        = explode( '.', $latest_wc_version );
+		$supported_semver     = explode( '.', (string) $this->min_wc_semver );
+		$supported_major      = max( 0,  (int) $latest_semver[0] - (int) $supported_semver[0] );
+		$supported_minor      = isset( $supported_semver[1] ) ? (int) $supported_semver[1] : 0;
+		$previous_minor       = null;
 
 		// loop known WooCommerce versions from the most recent until we get the oldest supported one
 		foreach ( $latest_wc_versions as $older_wc_version ) {
@@ -373,7 +342,7 @@ abstract class Plugin {
 			// store the previous minor while we loop patch versions, which we ignore
 			$previous_minor = $older_minor;
 
-			--$supported_minor;
+			$supported_minor--;
 		}
 
 		// for strict comparison, we strip the patch version from the determined versions and compare only major, minor versions, ignoring patches (i.e. 1.2.3 becomes 1.2)
@@ -390,8 +359,7 @@ abstract class Plugin {
 					__( 'Heads up! %1$s will soon discontinue support for WooCommerce %2$s. Please %3$supdate WooCommerce%4$s to take advantage of the latest updates and features.', 'facebook-for-woocommerce' ),
 					$this->get_plugin_name(),
 					$current_wc_version,
-					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
-					'</a>'
+					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) .'">', '</a>'
 				),
 				$this->get_id_dasherized() . '-deprecated-wc-version-as-of-' . str_replace( '.', '-', $supported_wc_version ),
 				[ 'notice_class' => 'notice-info' ]
@@ -454,8 +422,8 @@ abstract class Plugin {
 	 * Log API requests/responses
 	 *
 	 * @since 2.2.0
-	 * @param array       $request request data, see SV_WC_API_Base::broadcast_request() for format
-	 * @param array       $response response data
+	 * @param array $request request data, see SV_WC_API_Base::broadcast_request() for format
+	 * @param array $response response data
 	 * @param string|null $log_id log to write data to
 	 */
 	public function log_api_request( $request, $response, $log_id = null ) {
@@ -532,25 +500,15 @@ abstract class Plugin {
 	 * @since 2.0.0
 	 * @param string $message error or message to save to log
 	 * @param string $log_id optional log id to segment the files by, defaults to plugin id
-	 * @param string $level optional log level represents log's tag, defaults to notice
 	 */
-	public function log( $message, $log_id = null, $level = null ) {
+	public function log( $message, $log_id = null ) {
 		if ( is_null( $log_id ) ) {
 			$log_id = $this->get_id();
-		}
-		if ( is_null( $level ) ) {
-			$level = \WC_Log_Levels::NOTICE;
 		}
 		if ( ! is_object( $this->logger ) ) {
 			$this->logger = new \WC_Logger();
 		}
-		$this->logger->log(
-			$level,
-			$message,
-			array(
-				'source' => $log_id,
-			)
-		);
+		$this->logger->add( $log_id, $message );
 	}
 
 
@@ -573,7 +531,7 @@ abstract class Plugin {
 	/**
 	 * The implementation for this abstract method should simply be:
 	 *
-	 * Return __FILE__;
+	 * return __FILE__;
 	 *
 	 * @since 2.0.0
 	 * @return string the full path and filename of the plugin file
@@ -781,7 +739,7 @@ abstract class Plugin {
 	/**
 	 * Gets the plugin's path without a trailing slash.
 	 *
-	 * E.g. /path/to/wp-content/plugins/plugin-directory
+	 * e.g. /path/to/wp-content/plugins/plugin-directory
 	 *
 	 * @since 2.0.0
 	 *

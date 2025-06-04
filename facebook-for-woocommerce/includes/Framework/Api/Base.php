@@ -242,9 +242,8 @@ abstract class Base {
 	 * @return string
 	 */
 	protected function get_request_uri() {
-		$base_path = $this->get_request()->get_base_path_override() ?? $this->request_uri;
-		$uri       = $base_path . $this->get_request_path();
-		$query     = $this->get_request_query();
+		$uri   = $this->request_uri . $this->get_request_path();
+		$query = $this->get_request_query();
 
 		// Append any query params to the URL when necessary.
 		if ( $query ) {
@@ -401,7 +400,7 @@ abstract class Base {
 	 * @return array
 	 */
 	protected function get_request_headers() {
-		return array_merge( $this->request_headers, $this->get_request()->get_request_specific_headers() );
+		return $this->request_headers;
 	}
 
 

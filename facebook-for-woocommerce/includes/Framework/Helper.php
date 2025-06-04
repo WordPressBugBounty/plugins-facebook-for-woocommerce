@@ -1,11 +1,12 @@
 <?php
+// phpcs:ignoreFile
 /**
  * Facebook for WooCommerce.
  */
 
 namespace WooCommerce\Facebook\Framework;
 
-defined( 'ABSPATH' ) || exit;
+defined( 'ABSPATH' ) or exit;
 
 /**
  * Facebook Helper Class
@@ -13,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Helper {
 
-	/** Encoding used for mb_*() string functions */
+	/** encoding used for mb_*() string functions */
 	const MB_ENCODING = 'UTF-8';
 
 	/** String manipulation functions (all multi-byte safe) ***************/
@@ -100,36 +101,27 @@ class Helper {
 	 * for a total length not exceeding $length
 	 *
 	 * @since 2.2.0
-	 * @param string $input_string Text to truncate.
-	 * @param int    $length       Total desired length of string, including omission.
-	 * @param string $omission     Omission text, defaults to '...'.
+	 * @param string $string text to truncate
+	 * @param int $length total desired length of string, including omission
+	 * @param string $omission omission text, defaults to '...'
 	 * @return string
 	 */
-	public static function str_truncate( $input_string, $length, $omission = '...' ) {
-		// Ensure input is a string
-		if ( ! is_string( $input_string ) ) {
-			if ( is_array( $input_string ) ) {
-				$input_string = isset( $input_string[0] ) ? $input_string[0] : '';
-			} else {
-				$input_string = (string) $input_string;
-			}
-		}
-
+	public static function str_truncate( $string, $length, $omission = '...' ) {
 		if ( self::multibyte_loaded() ) {
 			// bail if string doesn't need to be truncated
-			if ( mb_strlen( $input_string, self::MB_ENCODING ) <= $length ) {
-				return $input_string;
+			if ( mb_strlen( $string, self::MB_ENCODING ) <= $length ) {
+				return $string;
 			}
 			$length -= mb_strlen( $omission, self::MB_ENCODING );
-			return mb_substr( $input_string, 0, $length, self::MB_ENCODING ) . $omission;
+			return mb_substr( $string, 0, $length, self::MB_ENCODING ) . $omission;
 		} else {
-			$input_string = self::str_to_ascii( $input_string );
+			$string = self::str_to_ascii( $string );
 			// bail if string doesn't need to be truncated
-			if ( strlen( $input_string ) <= $length ) {
-				return $input_string;
+			if ( strlen( $string ) <= $length ) {
+				return $string;
 			}
 			$length -= strlen( $omission );
-			return substr( $input_string, 0, $length ) . $omission;
+			return substr( $string, 0, $length ) . $omission;
 		}
 	}
 
@@ -141,14 +133,14 @@ class Helper {
 	 * 33-126 (newlines/carriage returns are stripped)
 	 *
 	 * @since 2.2.0
-	 * @param string $target_string string to make ASCII
+	 * @param string $string string to make ASCII
 	 * @return string
 	 */
-	public static function str_to_ascii( $target_string ) {
+	public static function str_to_ascii( $string ) {
 		// Strip ASCII chars 32 and under
-		$target_string = preg_replace( '/[\x00-\x1F]/', '', $target_string );
+		$string = preg_replace( '/[\x00-\x1F]/', '', $string );
 		// Strip ASCII chars 127 and higher
-		return preg_replace( '/[\x7F-\xFF]/', '', $target_string );
+		return preg_replace( '/[\x7F-\xFF]/', '', $string );
 	}
 
 
@@ -183,16 +175,16 @@ class Helper {
 	 * array( 'item_1' => 'foo', 'item_1.5' => 'w00t', 'item_2' => 'bar' )
 	 *
 	 * @since 2.2.0
-	 * @param array  $input_array Array to insert the given element into.
-	 * @param string $insert_key  Key to insert given element after.
-	 * @param array  $element     Element to insert into array.
+	 * @param array $array array to insert the given element into
+	 * @param string $insert_key key to insert given element after
+	 * @param array $element element to insert into array
 	 * @return array
 	 */
-	public static function array_insert_after( array $input_array, $insert_key, array $element ) {
+	public static function array_insert_after( Array $array, $insert_key, Array $element ) {
 		$new_array = [];
-		foreach ( $input_array as $key => $value ) {
+		foreach ( $array as $key => $value ) {
 			$new_array[ $key ] = $value;
-			if ( $insert_key === $key ) {
+			if ( $insert_key == $key ) {
 				foreach ( $element as $k => $v ) {
 					$new_array[ $k ] = $v;
 				}
@@ -230,16 +222,15 @@ class Helper {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string                           $key           Posted data key.
-	 * @param int|float|array|bool|null|string $default_value Default data type to return (default empty string).
-	 * @return int|float|array|bool|null|string Posted data value if key found, or default.
+	 * @param string $key posted data key
+	 * @param int|float|array|bool|null|string $default default data type to return (default empty string)
+	 * @return int|float|array|bool|null|string posted data value if key found, or default
 	 */
-	public static function get_posted_value( $key, $default_value = '' ) {
+	public static function get_posted_value( $key, $default = '' ) {
 
-		$value = $default_value;
-		//phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$value = $default;
+
 		if ( isset( $_POST[ $key ] ) ) {
-			//phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$sanitized_value = wc_clean( wp_unslash( $_POST[ $key ] ) );
 			$value           = is_string( $sanitized_value ) ? trim( $sanitized_value ) : $sanitized_value;
 		}
@@ -255,16 +246,15 @@ class Helper {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string                           $key           Posted data key.
-	 * @param int|float|array|bool|null|string $default_value Default data type to return (default empty string).
-	 * @return int|float|array|bool|null|string Posted data value if key found, or default.
+	 * @param string $key posted data key
+	 * @param int|float|array|bool|null|string $default default data type to return (default empty string)
+	 * @return int|float|array|bool|null|string posted data value if key found, or default
 	 */
-	public static function get_requested_value( $key, $default_value = '' ) {
+	public static function get_requested_value( $key, $default = '' ) {
 
-		$value = $default_value;
-		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$value = $default;
+
 		if ( isset( $_REQUEST[ $key ] ) ) {
-			//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$sanitized_value = wc_clean( wp_unslash( $_REQUEST[ $key ] ) );
 			$value           = is_string( $sanitized_value ) ? trim( $sanitized_value ) : $sanitized_value;
 		}
@@ -357,7 +347,7 @@ class Helper {
 	public static function get_current_screen() {
 		global $current_screen;
 
-		return ! empty( $current_screen ) ? $current_screen : null;
+		return $current_screen ?: null;
 	}
 
 
@@ -402,7 +392,8 @@ class Helper {
 		$rest_prefix         = trailingslashit( rest_get_url_prefix() );
 		$is_rest_api_request = false !== strpos( wc_clean( wp_unslash( $_SERVER['REQUEST_URI'] ) ), $rest_prefix );
 
-		/** Applies WooCommerce core filter */
+		/* applies WooCommerce core filter */
 		return (bool) apply_filters( 'woocommerce_is_rest_api_request', $is_rest_api_request );
 	}
+
 }
