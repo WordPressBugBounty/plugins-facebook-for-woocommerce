@@ -10,14 +10,14 @@
  * Description: Grow your business on Facebook! Use this official plugin to help sell more of your products using Facebook. After completing the setup, you'll be ready to create ads that promote your products and you can also create a shop section on your Page where customers can browse your products on Facebook.
  * Author: Facebook
  * Author URI: https://www.facebook.com/
- * Version: 3.5.9
+ * Version: 3.5.16
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Text Domain: facebook-for-woocommerce
  * Requires Plugins: woocommerce
- * Tested up to: 6.8.1
+ * Tested up to: 6.9
  * WC requires at least: 6.4
- * WC tested up to: 10.1.2
+ * WC tested up to: 10.3.6
  *
  * @package FacebookCommerce
  */
@@ -62,7 +62,7 @@ class WC_Facebook_Loader {
 	/**
 	 * @var string the plugin version. This must be in the main plugin file to be automatically bumped by Woorelease.
 	 */
-	const PLUGIN_VERSION = '3.5.9'; // WRCS: DEFINED_VERSION.
+	const PLUGIN_VERSION = '3.5.16'; // WRCS: DEFINED_VERSION.
 
 	// Minimum PHP version required by this plugin.
 	const MINIMUM_PHP_VERSION = '7.4.0';
@@ -103,10 +103,15 @@ class WC_Facebook_Loader {
 	protected function __construct() {
 
 		register_activation_hook( __FILE__, array( $this, 'activation_check' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivation_cleanup' ) );
 
 		add_action( 'admin_init', array( $this, 'check_environment' ) );
 
 		add_action( 'admin_notices', array( $this, 'admin_notices' ), 15 );
+
+		// Flush rewrite rules if flagged (runs once after activation/upgrade).
+		// Priority 99 ensures all rewrite rules are registered before flushing.
+		add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 99 );
 
 		// If the environment check fails, initialize the plugin.
 		if ( $this->is_environment_compatible() ) {
@@ -200,6 +205,49 @@ class WC_Facebook_Loader {
 			$this->deactivate_plugin();
 
 			wp_die( esc_html( self::PLUGIN_NAME . ' could not be activated. ' . $this->get_environment_message() ) );
+		}
+
+		// Flag that rewrite rules need to be flushed on next init.
+		update_option( 'facebook_for_woocommerce_flush_rewrite_rules', 'yes' );
+	}
+
+
+	/**
+	 * Handles plugin deactivation cleanup.
+	 *
+	 * Flushes rewrite rules to remove custom endpoints like /fbcollection/.
+	 *
+	 * @internal
+	 *
+	 * @since 3.5.0
+	 */
+	public function deactivation_cleanup() {
+		flush_rewrite_rules();
+		delete_option( 'facebook_for_woocommerce_rewrite_version' );
+	}
+
+
+	/**
+	 * Flush rewrite rules if the flag is set.
+	 *
+	 * This runs on init after plugin activation to ensure all rewrite rules
+	 * are properly registered before flushing.
+	 *
+	 * @internal
+	 *
+	 * @since 3.5.0
+	 */
+	public function maybe_flush_rewrite_rules() {
+		$stored_version = get_option( 'facebook_for_woocommerce_rewrite_version' );
+
+		// Flush if activation flag is set OR if plugin version has changed (plugin upgrade).
+		$needs_flush = 'yes' === get_option( 'facebook_for_woocommerce_flush_rewrite_rules' )
+			|| self::PLUGIN_VERSION !== $stored_version;
+
+		if ( $needs_flush ) {
+			flush_rewrite_rules();
+			delete_option( 'facebook_for_woocommerce_flush_rewrite_rules' );
+			update_option( 'facebook_for_woocommerce_rewrite_version', self::PLUGIN_VERSION );
 		}
 	}
 
@@ -317,11 +365,7 @@ class WC_Facebook_Loader {
 
 
 	private static function is_wp_com() {
-		$api_url       = 'https://public-api.wordpress.com/rest/v1.1/sites/' . wp_parse_url( get_site_url() )['host'];
-		$response      = wp_remote_get( $api_url );
-		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( ! is_wp_error( $response ) && isset( $response_body['ID'] ) ) {
+		if ( defined( 'WPCOMSH_VERSION' ) && defined( 'IS_ATOMIC' ) && IS_ATOMIC ) {
 			return true;
 		}
 		return false;
@@ -367,11 +411,9 @@ class WC_Facebook_Loader {
 			return;
 		}
 
-		if ( false !== get_transient( 'wc_facebook_svr_flags_ds' ) ) {
+		if ( get_transient( 'wc_facebook_svr_flags_last_update' ) ) {
 			return;
 		}
-
-		set_transient( 'wc_facebook_svr_flags_ds', 1, HOUR_IN_SECONDS );
 
 		$wp_woo_flags = 0;
 
@@ -389,7 +431,7 @@ class WC_Facebook_Loader {
 		}
 
 		update_option( 'wc_facebook_svr_flags', $wp_woo_flags );
-		set_transient( 'wc_facebook_svr_flags_ds', 1, WEEK_IN_SECONDS );
+		set_transient( 'wc_facebook_svr_flags_last_update', true, WEEK_IN_SECONDS );
 	}
 
 

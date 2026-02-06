@@ -10,6 +10,7 @@
 
 require_once __DIR__ . '/fbutils.php';
 
+use WooCommerce\Facebook\CollectionPage;
 use WooCommerce\Facebook\Feed\ShippingProfilesFeed;
 use WooCommerce\Facebook\Framework\Helper;
 use WooCommerce\Facebook\Handlers\PluginRender;
@@ -335,7 +336,7 @@ class WC_Facebook_Product {
 		if ( is_callable( 'get_post' ) ) {
 			return get_post( $this->id );
 		} else {
-			return $this->get_post_data();
+			return null;
 		}
 	}
 
@@ -463,30 +464,43 @@ class WC_Facebook_Product {
 			$product = wc_get_product( $parent_id );
 		}
 
-		$attached_videos = get_attached_media( 'video', $this->id );
+		// Check the video source to determine which meta key to use
+		$video_source = $product->get_meta( \WooCommerce\Facebook\Products::PRODUCT_VIDEO_SOURCE_META_KEY );
 
-		$custom_video_urls = $product->get_meta( self::FB_PRODUCT_VIDEO );
-
-		if ( empty( $attached_videos ) && empty( $custom_video_urls ) ) {
+		// If video source is 'custom', get the custom video URL
+		if ( \WooCommerce\Facebook\Products::PRODUCT_VIDEO_SOURCE_CUSTOM === $video_source ) {
+			$custom_video_url = trim( $product->get_meta( self::FB_PRODUCT_VIDEO . '_custom_url' ) );
+			if ( ! empty( $custom_video_url ) && filter_var( $custom_video_url, FILTER_VALIDATE_URL ) ) {
+				$video_urls[] = array( 'url' => $custom_video_url );
+			}
 			return $video_urls;
 		}
 
-		// Add custom video URLs to the list
-		if ( ! empty( $custom_video_urls ) && is_array( $custom_video_urls ) ) {
-			foreach ( $custom_video_urls as $custom_url ) {
-				$custom_url = trim( $custom_url );
-				if ( ! empty( $custom_url ) ) {
-					$video_urls[] = array( 'url' => $custom_url );
+		// Otherwise, use uploaded videos (default behavior)
+		$attached_videos = get_attached_media( 'video', $this->id );
+
+		$uploaded_video_urls = $product->get_meta( self::FB_PRODUCT_VIDEO );
+
+		if ( empty( $attached_videos ) && empty( $uploaded_video_urls ) ) {
+			return $video_urls;
+		}
+
+		// Add uploaded video URLs to the list
+		if ( is_array( $uploaded_video_urls ) ) {
+			foreach ( $uploaded_video_urls as $video_url ) {
+				$video_url = trim( $video_url );
+				if ( ! empty( $video_url ) ) {
+					$video_urls[] = array( 'url' => $video_url );
 				}
 			}
 		}
 
-		// Add attached video URLs to the list, excluding duplicates from custom video URLs
+		// Add attached video URLs to the list, excluding duplicates from uploaded video URLs
 		if ( ! empty( $attached_videos ) ) {
-			$custom_video_url_set = array_flip( array_column( $video_urls, 'url' ) );
+			$uploaded_video_url_set = array_flip( array_column( $video_urls, 'url' ) );
 			foreach ( $attached_videos as $video ) {
 				$url = wp_get_attachment_url( $video->ID );
-				if ( $url && ! isset( $custom_video_url_set[ $url ] ) ) {
+				if ( $url && ! isset( $uploaded_video_url_set[ $url ] ) ) {
 					$video_urls[] = array( 'url' => $url );
 				}
 			}
@@ -750,7 +764,10 @@ class WC_Facebook_Product {
 
 		// If no description is found from meta or variation, get from post
 		if ( empty( $description ) ) {
-			$post         = $this->get_post_data();
+			$post = $this->get_post_data();
+			if ( ! $post ) {
+				return apply_filters( 'facebook_for_woocommerce_fb_product_description', '', $this->id );
+			}
 			$post_content = WC_Facebookcommerce_Utils::clean_string( $post->post_content );
 			$post_excerpt = WC_Facebookcommerce_Utils::clean_string( $post->post_excerpt );
 			$post_title   = WC_Facebookcommerce_Utils::clean_string( $post->post_title );
@@ -826,7 +843,10 @@ class WC_Facebook_Product {
 		}
 
 		// Use the product's short description (excerpt) from WooCommerce
-		$post         = $this->get_post_data();
+		$post = $this->get_post_data();
+		if ( ! $post ) {
+			return apply_filters( 'facebook_for_woocommerce_fb_product_short_description', '', $this->id );
+		}
 		$post_excerpt = WC_Facebookcommerce_Utils::clean_string( $post->post_excerpt );
 
 		if ( ! empty( $post_excerpt ) ) {
@@ -1788,8 +1808,8 @@ class WC_Facebook_Product {
 		$product_data['gender']    = $this->get_fb_gender();
 		$product_data['material']  = Helper::str_truncate( $this->get_fb_material(), 100 );
 		// Generate and add collection URI
-		$collection_uri = site_url( '/fbcollection/' );
-		$product_data['custom_label_4'] = $collection_uri;
+		$collection_uri = site_url( CollectionPage::ENDPOINT_PATH );
+		$product_data[ CollectionPage::PRODUCT_FEED_FIELD ] = $collection_uri;
 		if ( $this->get_type() === 'variation' ) {
 			$parent_id      = $this->woo_product->get_parent_id();
 			$parent_product = wc_get_product( $parent_id );
@@ -2212,8 +2232,8 @@ class WC_Facebook_Product {
 
 		$video_urls = $this->get_all_video_urls();
 
-		// If this is a variable product, get the video URLs from the parent product and add them to variations.
-		if ( $this->get_type() === 'variation' ) {
+		// If this is a variation with no videos, fall back to parent product videos
+		if ( $this->get_type() === 'variation' && empty( $video_urls ) ) {
 			$parent_id  = $this->woo_product->get_parent_id();
 			$video_urls = $this->get_all_video_urls( $parent_id );
 		}
@@ -2261,6 +2281,8 @@ class WC_Facebook_Product {
 			}
 		}
 
+		$product_data['plugin_version'] = facebook_for_woocommerce()->get_version();
+
 		// Only use checkout URLs if they exist.
 		$checkout_url = $this->build_checkout_url( $product_url );
 		if ( $checkout_url ) {
@@ -2270,7 +2292,7 @@ class WC_Facebook_Product {
 		// If using WPML, set the product to hidden unless it is in the
 		// default language. WPML >= 3.2 Supported.
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
-			if ( class_exists( 'WC_Facebook_WPML_Injector' ) && WC_Facebook_WPML_Injector::should_hide( $id ) ) {
+			if ( class_exists( \WooCommerce\Facebook\WPMLInjector::class ) && \WooCommerce\Facebook\WPMLInjector::should_hide( $id ) ) {
 				$product_data['visibility'] = \WC_Facebookcommerce_Integration::FB_SHOP_PRODUCT_HIDDEN;
 			}
 		}
