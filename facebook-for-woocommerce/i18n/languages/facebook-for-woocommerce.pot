@@ -1,15 +1,15 @@
-# Copyright (C) 2026 Facebook
-# This file is distributed under the same license as the Facebook for WooCommerce plugin.
+# Copyright (C) 2026 Meta
+# This file is distributed under the same license as the Meta for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Facebook for WooCommerce 3.5.17\n"
+"Project-Id-Version: Meta for WooCommerce 3.5.18\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facebook-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-19T17:01:46+00:00\n"
+"POT-Creation-Date: 2026-02-26T17:01:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: facebook-for-woocommerce\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: includes/Admin/Global_Attributes_Banner.php:212
 #: includes/Admin/Settings.php:95
 #: includes/Admin/Settings.php:148
-msgid "Facebook for WooCommerce"
+msgid "Meta for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -35,20 +35,17 @@ msgstr ""
 
 #. Description of the plugin
 #: facebook-for-woocommerce.php
-msgid "Grow your business on Facebook! Use this official plugin to help sell more of your products using Facebook. After completing the setup, you'll be ready to create ads that promote your products and you can also create a shop section on your Page where customers can browse your products on Facebook."
+msgid "Grow your business on Meta platforms! Use this official plugin to help sell more of your products using Facebook and Instagram. After completing the setup, you'll be ready to create ads that promote your products and you can also create a shop section on your Page where customers can browse your products."
 msgstr ""
 
 #. Author of the plugin
 #: facebook-for-woocommerce.php
-#: includes/Admin.php:884
-#: includes/Admin/Enhanced_Settings.php:116
-#: includes/Admin/Settings.php:96
-msgid "Facebook"
+msgid "Meta"
 msgstr ""
 
 #. Author URI of the plugin
 #: facebook-for-woocommerce.php
-msgid "https://www.facebook.com/"
+msgid "https://www.meta.com/"
 msgstr ""
 
 #. translators: %s property name.
@@ -84,7 +81,7 @@ msgid "Customer Events Post API call for Order id %1$s skipped due to missing Or
 msgstr ""
 
 #: facebook-commerce.php:279
-msgid "Facebook Commerce and Dynamic Ads (Pixel) Extension"
+msgid "Meta Commerce and Dynamic Ads (Pixel) Extension"
 msgstr ""
 
 #. translators: %d: number of additional unmapped attributes
@@ -102,7 +99,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: facebook-commerce.php:2944
-msgid "Facebook for WooCommerce error:"
+msgid "Meta for WooCommerce error:"
 msgstr ""
 
 #: facebook-commerce.php:2991
@@ -217,6 +214,12 @@ msgstr[1] ""
 #: includes/Admin.php:855
 #, php-format
 msgid "%1$sHeads up!%2$s Facebook's %3$sCommerce Policies%4$s do not support selling virtual products, so we have hidden your synced Virtual products in your Facebook catalog. You may still advertise Virtual products on Facebook."
+msgstr ""
+
+#: includes/Admin.php:884
+#: includes/Admin/Enhanced_Settings.php:116
+#: includes/Admin/Settings.php:96
+msgid "Facebook"
 msgstr ""
 
 #: includes/Admin.php:903
@@ -846,7 +849,7 @@ msgstr ""
 
 #: includes/Admin/Settings_Screens/Product_Sync.php:108
 msgid ""
-"Facebook for WooCommerce automatically syncs your products on create/update. Are you sure you want to force product resync?\n"
+"Meta for WooCommerce automatically syncs your products on create/update. Are you sure you want to force product resync?\n"
 "\n"
 "This will query all published products and may take some time. You only need to do this if your products are out of sync or some of your products did not sync."
 msgstr ""
