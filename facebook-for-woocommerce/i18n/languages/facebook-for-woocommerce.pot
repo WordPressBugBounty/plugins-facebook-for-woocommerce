@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Meta for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Meta for WooCommerce 3.5.18\n"
+"Project-Id-Version: Meta for WooCommerce 3.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facebook-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-26T17:01:29+00:00\n"
+"POT-Creation-Date: 2026-03-12T09:53:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: facebook-for-woocommerce\n"
@@ -69,13 +69,13 @@ msgid "WhatsApp order tracking is now available for testing. <a href='%s'>Sign u
 msgstr ""
 
 #. translators: %s $order_id
-#: facebook-commerce-iframe-whatsapp-utility-event.php:79
+#: facebook-commerce-iframe-whatsapp-utility-event.php:56
 #, php-format
 msgid "Processing Order id %1$s to send Whatsapp Utility messages"
 msgstr ""
 
 #. translators: %s $order_id
-#: facebook-commerce-iframe-whatsapp-utility-event.php:106
+#: facebook-commerce-iframe-whatsapp-utility-event.php:83
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s skipped due to missing Order info"
 msgstr ""
@@ -940,48 +940,48 @@ msgstr ""
 msgid "%1$sHeads up!%2$s It looks like there was a problem with reconnecting your site to Facebook. Please %3$sclick here%4$s to try again, or %5$sget in touch with our support team%6$s for assistance."
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:237
-#: includes/Admin/Settings_Screens/Shops.php:253
-#: includes/Admin/Settings_Screens/Shops.php:269
-#: includes/Admin/Settings_Screens/Shops.php:285
+#: includes/Admin/Settings_Screens/Shops.php:233
+#: includes/Admin/Settings_Screens/Shops.php:249
+#: includes/Admin/Settings_Screens/Shops.php:265
+#: includes/Admin/Settings_Screens/Shops.php:281
 msgid "Sync now"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:362
+#: includes/Admin/Settings_Screens/Shops.php:358
 msgid "Enable meta diagnosis"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:364
+#: includes/Admin/Settings_Screens/Shops.php:360
 msgid "Upload plugin events to Meta"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:365
+#: includes/Admin/Settings_Screens/Shops.php:361
 msgid "Allow Meta to monitor event and error logs to help fix issues."
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:371
+#: includes/Admin/Settings_Screens/Shops.php:367
 msgid "Enable debug mode"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:373
+#: includes/Admin/Settings_Screens/Shops.php:369
 msgid "Log plugin events for debugging."
 msgstr ""
 
 #. translators: %s URL to the documentation page.
-#: includes/Admin/Settings_Screens/Shops.php:375
+#: includes/Admin/Settings_Screens/Shops.php:371
 #, php-format
 msgid "Only enable this if you are experiencing problems with the plugin. <a href=\"%s\" target=\"_blank\">Learn more</a>."
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:382
+#: includes/Admin/Settings_Screens/Shops.php:378
 msgid "Enable Meta-managed coupons"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:384
+#: includes/Admin/Settings_Screens/Shops.php:380
 msgid "Allow Meta to create and manage coupons based on your offer setup on Meta business tools"
 msgstr ""
 
-#: includes/Admin/Settings_Screens/Shops.php:385
+#: includes/Admin/Settings_Screens/Shops.php:381
 msgid "If this is disabled, some promotional features in Meta business tools may not be available."
 msgstr ""
 
@@ -993,36 +993,36 @@ msgstr ""
 msgid "20 minutes"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:97
-#: includes/Admin/WhatsApp_Integration_Settings.php:122
+#: includes/Admin/WhatsApp_Integration_Settings.php:89
+#: includes/Admin/WhatsApp_Integration_Settings.php:114
 msgid "WhatsApp for WooCommerce"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:98
+#: includes/Admin/WhatsApp_Integration_Settings.php:90
 msgid "WhatsApp"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:205
+#: includes/Admin/WhatsApp_Integration_Settings.php:197
 msgid "WhatsApp Utility Connection Error"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:206
+#: includes/Admin/WhatsApp_Integration_Settings.php:198
 msgid "There was an error loading the WhatsApp Utility Message Integration. Please try reloading the page or resetting your settings."
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:214
+#: includes/Admin/WhatsApp_Integration_Settings.php:206
 msgid "Reload Page"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:219
+#: includes/Admin/WhatsApp_Integration_Settings.php:211
 msgid "Are you sure you want to reset WhatsApp settings? This action cannot be undone and you will have to re-onboard."
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:221
+#: includes/Admin/WhatsApp_Integration_Settings.php:213
 msgid "Reset Settings"
 msgstr ""
 
-#: includes/Admin/WhatsApp_Integration_Settings.php:238
+#: includes/Admin/WhatsApp_Integration_Settings.php:230
 msgid "Error resetting settings. Please try again or contact support."
 msgstr ""
 
@@ -1365,34 +1365,34 @@ msgstr ""
 msgid "WhatsApp Utility Messages Iframe Splash Url Fetched."
 msgstr ""
 
-#: includes/Handlers/WhatsAppExtension.php:88
+#: includes/Handlers/WhatsAppExtension.php:93
 msgid "WhatsApp Utility Messages Iframe Management Url failed to fetch due to failed WhatsApp connection"
 msgstr ""
 
 #. translators: %s $wa_installation_id %s $error_message
-#: includes/Handlers/WhatsAppExtension.php:119
+#: includes/Handlers/WhatsAppExtension.php:124
 #, php-format
 msgid "Failed to fetch iframe Management URI. wa_installation_id: %1$s, error message: %2$s"
 msgstr ""
 
-#: includes/Handlers/WhatsAppExtension.php:128
+#: includes/Handlers/WhatsAppExtension.php:133
 msgid "WhatsApp Utility Messages Iframe Management Url successfully fetched"
 msgstr ""
 
 #. translators: %s $order_id
-#: includes/Handlers/WhatsAppExtension.php:172
+#: includes/Handlers/WhatsAppExtension.php:175
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s Failed due to failed connection "
 msgstr ""
 
 #. translators: %s $order_id %s $error_message
-#: includes/Handlers/WhatsAppExtension.php:233
+#: includes/Handlers/WhatsAppExtension.php:236
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s Failed %2$s "
 msgstr ""
 
 #. translators: %s $order_id
-#: includes/Handlers/WhatsAppExtension.php:242
+#: includes/Handlers/WhatsAppExtension.php:245
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s Succeeded."
 msgstr ""
