@@ -2,21 +2,21 @@
 # This file is distributed under the same license as the Meta for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Meta for WooCommerce 3.6.3\n"
+"Project-Id-Version: Meta for WooCommerce 3.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facebook-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-16T17:27:41+00:00\n"
+"POT-Creation-Date: 2026-05-11T10:26:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: facebook-for-woocommerce\n"
 
 #. Plugin Name of the plugin
 #: facebook-for-woocommerce.php
-#: class-wc-facebookcommerce.php:698
+#: class-wc-facebookcommerce.php:718
 #: facebook-commerce.php:275
 #: includes/Admin.php:1373
 #: includes/Admin.php:1823
@@ -49,8 +49,8 @@ msgid "https://www.meta.com/"
 msgstr ""
 
 #. translators: %s property name.
-#: class-wc-facebookcommerce.php:176
-#: facebook-commerce.php:433
+#: class-wc-facebookcommerce.php:182
+#: facebook-commerce.php:438
 #: includes/Admin/Enhanced_Catalog_Attribute_Fields.php:68
 #: includes/fbbackground.php:47
 #: includes/fbproduct.php:293
@@ -58,7 +58,7 @@ msgstr ""
 msgid "The %s property is private and should not be accessed outside its class."
 msgstr ""
 
-#: class-wc-facebookcommerce.php:452
+#: class-wc-facebookcommerce.php:461
 msgid "Cannot create the API instance because the access token is missing."
 msgstr ""
 
@@ -68,11 +68,11 @@ msgstr ""
 msgid "WhatsApp order tracking is now available for testing. <a href='%s'>Sign up for our testing program</a> and get early access now!"
 msgstr ""
 
-#: facebook-commerce-events-tracker.php:989
+#: facebook-commerce-events-tracker.php:1021
 msgid "Facebook Pixel event name"
 msgstr ""
 
-#: facebook-commerce-events-tracker.php:995
+#: facebook-commerce-events-tracker.php:1027
 msgid "Facebook Pixel event parameters including event_id for deduplication"
 msgstr ""
 
@@ -93,24 +93,24 @@ msgid "Meta Commerce and Dynamic Ads (Pixel) Extension"
 msgstr ""
 
 #. translators: %d: number of additional unmapped attributes
-#: facebook-commerce.php:1730
+#: facebook-commerce.php:1737
 #, php-format
 msgid " and %d more"
 msgstr ""
 
 #. translators: %1$s - attribute list, %2$d - count, %3$s - link start, %4$s - link end
-#: facebook-commerce.php:1744
+#: facebook-commerce.php:1751
 #, php-format
 msgid "%3$s%2$d attribute \"%1$s\" is not mapped to Meta.%4$s Use the %3$sattribute mapper%4$s to map this attribute and improve your product visibility in Meta ads."
 msgid_plural "%3$s%2$d attributes (%1$s) are not mapped to Meta.%4$s Use the %3$sattribute mapper%4$s to map these attributes and improve your product visibility in Meta ads."
 msgstr[0] ""
 msgstr[1] ""
 
-#: facebook-commerce.php:2944
+#: facebook-commerce.php:2951
 msgid "Meta for WooCommerce error:"
 msgstr ""
 
-#: facebook-commerce.php:2991
+#: facebook-commerce.php:2998
 #: includes/Admin.php:2650
 #: includes/Admin/Settings_Screens/Product_Attributes.php:985
 msgid "Dismiss this notice."
@@ -551,7 +551,7 @@ msgstr ""
 #. translators: %s: WordPress.org plugin page URL
 #: includes/Admin.php:2617
 #, php-format
-msgid "After April 30th, 2026, Meta for WooCommerce will no longer receive automatic updates on WordPress.com-hosted websites. <a href=\"%s\">Download the latest version from WordPress.org</a> and install it manually via <strong>Plugins</strong> &rsaquo; <strong>Add New Plugin</strong> &rsaquo; <strong>Upload Plugin</strong> to ensure you receive future updates."
+msgid "Meta for WooCommerce is expected to be removed from the WordPress.com marketplace soon. When this happens, it will no longer receive automatic updates on WordPress.com-hosted websites. <a href=\"%s\">Download the latest version from WordPress.org</a> and install it manually via <strong>Plugins</strong> &rsaquo; <strong>Add New Plugin</strong> &rsaquo; <strong>Upload Plugin</strong> to ensure you receive future updates."
 msgstr ""
 
 #: includes/Admin/Abstract_Settings_Screen.php:77
@@ -1309,42 +1309,42 @@ msgid ""
 msgstr ""
 
 #. translators: Placeholders: %s - user-friendly error message
-#: includes/Framework/Utilities/BackgroundJobHandler.php:698
+#: includes/Framework/Utilities/BackgroundJobHandler.php:701
 #: includes/Products/Sync/Background.php:60
 #, php-format
 msgid "Job data key \"%s\" not set"
 msgstr ""
 
 #. translators: Placeholders: %s - user-friendly error message
-#: includes/Framework/Utilities/BackgroundJobHandler.php:703
+#: includes/Framework/Utilities/BackgroundJobHandler.php:706
 #: includes/Products/Sync/Background.php:65
 #, php-format
 msgid "Job data key \"%s\" is not an array"
 msgstr ""
 
 #. translators: %d - interval in minutes.
-#: includes/Framework/Utilities/BackgroundJobHandler.php:934
+#: includes/Framework/Utilities/BackgroundJobHandler.php:937
 #, php-format
 msgid "Every %d Minutes"
 msgstr ""
 
-#: includes/Framework/Utilities/BackgroundJobHandler.php:1082
+#: includes/Framework/Utilities/BackgroundJobHandler.php:1085
 msgid "Background Processing Test"
 msgstr ""
 
-#: includes/Framework/Utilities/BackgroundJobHandler.php:1083
+#: includes/Framework/Utilities/BackgroundJobHandler.php:1086
 msgid "Run Test"
 msgstr ""
 
-#: includes/Framework/Utilities/BackgroundJobHandler.php:1084
+#: includes/Framework/Utilities/BackgroundJobHandler.php:1087
 msgid "This tool will test whether your server is capable of processing background jobs."
 msgstr ""
 
-#: includes/Framework/Utilities/BackgroundJobHandler.php:1101
+#: includes/Framework/Utilities/BackgroundJobHandler.php:1104
 msgid "Success! You should be able to process background jobs."
 msgstr ""
 
-#: includes/Framework/Utilities/BackgroundJobHandler.php:1104
+#: includes/Framework/Utilities/BackgroundJobHandler.php:1107
 msgid "Could not connect. Please ask your hosting company to ensure your server has loopback connections enabled."
 msgstr ""
 
