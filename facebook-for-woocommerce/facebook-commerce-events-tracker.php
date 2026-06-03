@@ -14,6 +14,7 @@ use WooCommerce\Facebook\Framework\Api\Exception as ApiException;
 use WooCommerce\Facebook\Framework\Helper;
 use WooCommerce\Facebook\Framework\Logger;
 use WooCommerce\Facebook\Integrations\CostOfGoods\CostOfGoods;
+use WooCommerce\Facebook\RolloutSwitches;
 
 if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 
@@ -68,6 +69,12 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 		 * @var \FacebookAds\ParamBuilder|null shared ParamBuilder instance
 		 */
 		private static $param_builder = null;
+
+		/** @var string|null Cached fbc value from ParamBuilder */
+		private static $cached_fbc = null;
+
+		/** @var string|null Cached fbp value from ParamBuilder */
+		private static $cached_fbp = null;
 
 		/**
 		 * Order meta keys used by the tracker.
@@ -131,6 +138,26 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 			return self::$param_builder;
 		}
 
+		public static function get_fbc() {
+			if ( null === self::$cached_fbc ) {
+				$param_builder = self::get_param_builder();
+				if ( $param_builder ) {
+					self::$cached_fbc = $param_builder->getFbc();
+				}
+			}
+			return self::$cached_fbc;
+		}
+
+		public static function get_fbp() {
+			if ( null === self::$cached_fbp ) {
+				$param_builder = self::get_param_builder();
+				if ( $param_builder ) {
+					self::$cached_fbp = $param_builder->getFbp();
+				}
+			}
+			return self::$cached_fbp;
+		}
+
 		/**
 		 * Initializes the CAPI server side Parameter Builder and sets cookies as needed.
 		 */
@@ -146,8 +173,8 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 				// When signals are held, still run ParamBuilder so it can generate
 				// attribution IDs, but do not write cookies until signals are released.
 				if ( FacebookSignalsState::is_held() ) {
-					$fbc = $param_builder->getFbc();
-					$fbp = $param_builder->getFbp();
+					$fbc = self::get_fbc();
+					$fbp = self::get_fbp();
 
 					if ( ! empty( $fbc ) ) {
 						FacebookSignalsState::set_attribution_data( 'fbc', $fbc );
@@ -163,21 +190,19 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 							FacebookSignalsState::set_attribution_data( 'fbc_domain', $cookie->domain );
 						}
 					}
+				} else {
+					$cookie_to_set = $param_builder->getCookiesToSet();
 
-					return;
-				}
-
-				$cookie_to_set = $param_builder->getCookiesToSet();
-
-				if ( ! headers_sent() ) {
-					foreach ( $cookie_to_set as $cookie ) {
-						setcookie(
-							$cookie->name,
-							$cookie->value,
-							time() + $cookie->max_age,
-							'/',
-							$cookie->domain
-						);
+					if ( ! headers_sent() ) {
+						foreach ( $cookie_to_set as $cookie ) {
+							setcookie(
+								$cookie->name,
+								$cookie->value,
+								time() + $cookie->max_age,
+								'/',
+								$cookie->domain
+							);
+						}
 					}
 				}
 			} catch ( \Exception $exception ) {
@@ -275,7 +300,7 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 			add_action( 'wpforms_process_complete', array( $this, 'track_wpforms_lead_event' ), 20, 3 );
 			add_filter( 'wpforms_ajax_submit_success_response', array( $this, 'inject_wpforms_lead_event_ajax' ), 20, 3 );
 			add_filter( 'wpforms_ajax_submit_redirect', array( $this, 'inject_wpforms_lead_event_ajax' ), 20, 3 );
-			add_action( 'wp_footer', array( $this, 'inject_wpforms_ajax_listener' ), 9 );
+			add_action( 'wp_footer', array( $this, 'inject_wpforms_ajax_listener' ), 20 );
 
 			// Flush pending events on shutdown
 			add_action( 'shutdown', array( $this, 'send_pending_events' ) );
@@ -327,7 +352,7 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 			// Add inline script that executes after the external script has loaded
 			wp_add_inline_script(
 				'facebook-capi-param-builder',
-				'if (typeof clientParamBuilder !== "undefined") {
+				'if (typeof clientParamBuilder !== "undefined" && !/(?:^|;\s*)wc_facebook_signals_state=held(?:;|$)/.test(document.cookie)) {
 					clientParamBuilder.processAndCollectAllParams(window.location.href);
 				}'
 			);
@@ -816,8 +841,11 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 			// store the ID in the session to be sent in AJAX JS event tracking as well
 			WC()->session->set( 'facebook_for_woocommerce_add_to_cart_event_id', $event->get_id() );
 
-			// Store pending pixel event for WooCommerce Blocks Store API
-			// Reuse custom_data and add event_id for deduplication
+			// Store pending pixel event for WooCommerce Blocks Store API.
+			// Reuse custom_data and add event_id for deduplication.
+			// NOTE: single-slot — if a batch request adds multiple products this gets
+			// overwritten for each one and get_store_api_pixel_event_data() will only
+			// return the last product's event. Fix: convert to an array and flush all.
 			$pending_pixel_params                = array_merge( $custom_data, array( 'event_id' => $event->get_id() ) );
 			$this->pending_store_api_pixel_event = array(
 				'event'  => 'AddToCart',
@@ -1537,6 +1565,21 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 		 * @param bool  $send_now optional, defaults to true
 		 */
 		protected function send_api_event( Event $event, bool $send_now = true ) {
+			if ( $this->is_crawler_request( $event ) ) {
+				facebook_for_woocommerce()->log( 'Blocked CAPI event for crawler: ' . $event->get_client_user_agent() );
+				return;
+			}
+
+			// Skip CAPI events when the connection is known-invalid (auth error detected),
+			// gated on the server-side rollout switch. Events resume after the merchant reconnects.
+			if ( get_transient( 'wc_facebook_connection_invalid' )
+				&& facebook_for_woocommerce()->get_rollout_switches()->is_switch_enabled(
+					RolloutSwitches::SWITCH_BLOCK_CAPI_ON_INVALID_TOKEN
+				)
+			) {
+				return;
+			}
+
 			$this->tracked_events[] = $event;
 
 			// Skip CAPI sends for frontend requests while signals are held.
@@ -1557,6 +1600,57 @@ if ( ! class_exists( 'WC_Facebookcommerce_EventsTracker' ) ) :
 			}
 		}
 
+
+		/**
+		 * Determines whether the current request is from a known crawler.
+		 *
+		 * Checks the User-Agent header against a list of known crawler identifiers
+		 * to prevent server-side events from firing for non-human traffic.
+		 * This helps close the gap between pixel and CAPI event counts,
+		 * since crawlers trigger CAPI events but never execute client-side JavaScript.
+		 *
+		 * @since 3.3.0
+		 *
+		 * @param Event $event Event object to read the User-Agent from.
+		 * @return bool
+		 */
+		private function is_crawler_request( Event $event ): bool {
+			$user_agent = strtolower( $event->get_client_user_agent() );
+
+			$crawler_patterns = array(
+				// Meta crawlers.
+				'meta-externalagent',
+				'meta-externalads',
+				'meta-webindexer',
+				// Generic crawler identifier.
+				'crawler',
+			);
+
+			/**
+			 * Filters the list of crawler user-agent patterns.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param string[] $crawler_patterns Array of lowercase crawler identifier strings to match against the User-Agent.
+			 */
+			$crawler_patterns = apply_filters( 'wc_facebook_crawler_user_agent_patterns', $crawler_patterns );
+
+			foreach ( $crawler_patterns as $pattern ) {
+				if ( false !== strpos( $user_agent, $pattern ) ) {
+					return true;
+				}
+			}
+
+			/**
+			 * Filters whether the current request should be treated as a crawler request.
+			 *
+			 * @since 3.3.0
+			 *
+			 * @param bool   $is_crawler Whether the request is from a crawler. Default false after pattern checks pass.
+			 * @param string $user_agent The request User-Agent string.
+			 */
+			return (bool) apply_filters( 'wc_facebook_is_crawler_request', false, $user_agent );
+		}
 
 		/**
 		 * Gets the cart content items count.

@@ -195,7 +195,7 @@ class Handler extends AbstractRESTEndpoint {
 			}
 		}
 
-		$pixel_to_use = $pixel_from_features ?: ( $params['pixel_id'] ?? '' );
+		$pixel_to_use = ! empty( $pixel_from_features ) ? $pixel_from_features : ( $params['pixel_id'] ?? '' );
 
 		if ( ! empty( $pixel_to_use ) ) {
 			$options[ \WC_Facebookcommerce_Integration::SETTING_FACEBOOK_PIXEL_ID ] = $pixel_to_use;
@@ -245,6 +245,9 @@ class Handler extends AbstractRESTEndpoint {
 		// Set the connection is complete
 		update_option( 'wc_facebook_has_connected_fbe_2', 'yes' );
 		update_option( 'wc_facebook_has_authorized_pages_read_engagement', 'yes' );
+
+		// Clear any invalid connection flags since we just received fresh tokens
+		delete_transient( 'wc_facebook_connection_invalid' );
 
 		// Set the Messenger chat visibility
 		if ( ! empty( $params['msger_chat'] ) ) {
