@@ -10,8 +10,6 @@
 
 namespace WooCommerce\Facebook;
 
-use WooCommerce\Facebook\Events\FacebookSignalsState;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -89,16 +87,34 @@ class Signals {
 		$state = isset( $_POST['state'] ) ? sanitize_text_field( wp_unslash( $_POST['state'] ) ) : self::STATE_HELD;
 		$state = $this->normalize_state( $state );
 
-		if ( self::STATE_HELD === $state ) {
-			FacebookSignalsState::hold();
-		} else {
-			FacebookSignalsState::release();
-		}
+		$this->set_cookie( $state );
+
+		// Populate $_COOKIE so any downstream code in this same request can read it.
+		$_COOKIE[ self::COOKIE_NAME ] = $state;
 
 		wp_send_json_success(
 			array(
 				'state' => $state,
 			)
+		);
+	}
+
+	/**
+	 * Sets the signal-state cookie.
+	 *
+	 * @param string $state Signal state.
+	 */
+	private function set_cookie( string $state ) {
+		$expires = time() + YEAR_IN_SECONDS;
+
+		setcookie(
+			self::COOKIE_NAME,
+			$state,
+			$expires,
+			COOKIEPATH,
+			COOKIE_DOMAIN,
+			is_ssl(),
+			false // httponly=false so JS can read it
 		);
 	}
 
