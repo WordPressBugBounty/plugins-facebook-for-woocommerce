@@ -2,21 +2,21 @@
 # This file is distributed under the same license as the Meta for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Meta for WooCommerce 3.7.4\n"
+"Project-Id-Version: Meta for WooCommerce 3.7.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facebook-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-25T13:04:57+00:00\n"
+"POT-Creation-Date: 2026-07-16T13:34:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: facebook-for-woocommerce\n"
 
 #. Plugin Name of the plugin
-#: facebook-for-woocommerce.php
-#: class-wc-facebookcommerce.php:720
+#: facebook-for-woocommerce.php:8
+#: class-wc-facebookcommerce.php:717
 #: facebook-commerce.php:275
 #: includes/Admin.php:1374
 #: includes/Admin.php:1824
@@ -29,22 +29,22 @@ msgid "Meta for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: facebook-for-woocommerce.php
+#: facebook-for-woocommerce.php:9
 msgid "https://github.com/woocommerce/facebook-for-woocommerce/"
 msgstr ""
 
 #. Description of the plugin
-#: facebook-for-woocommerce.php
+#: facebook-for-woocommerce.php:10
 msgid "Grow your business on Meta platforms! Use this official plugin to help sell more of your products using Facebook and Instagram. After completing the setup, you'll be ready to create ads that promote your products and you can also create a shop section on your Page where customers can browse your products."
 msgstr ""
 
 #. Author of the plugin
-#: facebook-for-woocommerce.php
+#: facebook-for-woocommerce.php:11
 msgid "Meta"
 msgstr ""
 
 #. Author URI of the plugin
-#: facebook-for-woocommerce.php
+#: facebook-for-woocommerce.php:12
 msgid "https://www.meta.com/"
 msgstr ""
 
@@ -58,12 +58,12 @@ msgstr ""
 msgid "The %s property is private and should not be accessed outside its class."
 msgstr ""
 
-#: class-wc-facebookcommerce.php:463
+#: class-wc-facebookcommerce.php:460
 msgid "Cannot create the API instance because the access token is missing."
 msgstr ""
 
 #. translators: %1$s - <strong>, %2$s - </strong>, %3$s - <a> reconnect link, %4$s - </a>, %5$s - <a> support link, %6$s - </a>
-#: class-wc-facebookcommerce.php:898
+#: class-wc-facebookcommerce.php:839
 #, php-format
 msgid "%1$sMeta for WooCommerce connection error.%2$s Your access token is no longer valid. This may happen if the system user was unconfirmed, the password was changed, or the app was deauthorized. Please %3$sreconnect your store%4$s to restore functionality, or %5$scontact support%6$s for help."
 msgstr ""
@@ -74,11 +74,11 @@ msgstr ""
 msgid "WhatsApp order tracking is now available for testing. <a href='%s'>Sign up for our testing program</a> and get early access now!"
 msgstr ""
 
-#: facebook-commerce-events-tracker.php:1049
+#: facebook-commerce-events-tracker.php:1057
 msgid "Facebook Pixel event name"
 msgstr ""
 
-#: facebook-commerce-events-tracker.php:1055
+#: facebook-commerce-events-tracker.php:1063
 msgid "Facebook Pixel event parameters including event_id for deduplication"
 msgstr ""
 
@@ -117,9 +117,69 @@ msgid "Meta for WooCommerce error:"
 msgstr ""
 
 #: facebook-commerce.php:3013
+#: facebook-for-woocommerce.php:479
 #: includes/Admin.php:2651
 #: includes/Admin/Settings_Screens/Product_Attributes.php:985
 msgid "Dismiss this notice."
+msgstr ""
+
+#: facebook-for-woocommerce.php:472
+msgid "File"
+msgstr ""
+
+#: facebook-for-woocommerce.php:472
+msgid "Transient"
+msgstr ""
+
+#. translators: %d: disable window duration in minutes.
+#: facebook-for-woocommerce.php:477
+msgid "Permanent (3+ crashes)"
+msgstr ""
+
+#. translators: %d: disable window duration in minutes.
+#: facebook-for-woocommerce.php:477
+#, php-format
+msgid "%d minutes"
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Meta for WooCommerce is currently disabled due to repeated crashes."
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "You can re-enable the plugin after reviewing recent crash conditions."
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Crash count:"
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Disabled since:"
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Disable window:"
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Source:"
+msgstr ""
+
+#: facebook-for-woocommerce.php:479
+msgid "Re-enable plugin"
+msgstr ""
+
+#: facebook-for-woocommerce.php:489
+msgid "You are not allowed to perform this action."
+msgstr ""
+
+#: facebook-for-woocommerce.php:583
+msgid "Insufficient permissions."
+msgstr ""
+
+#: facebook-for-woocommerce.php:590
+msgid "Missing signature."
 msgstr ""
 
 #: includes/Admin.php:169
@@ -1086,46 +1146,60 @@ msgstr ""
 msgid "Missing access token"
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:95
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:107
+msgid "WhatsApp onboarding marked complete via WA_CONNECT push signal."
+msgstr ""
+
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:112
+msgid "WhatsApp onboarding marked complete"
+msgstr ""
+
+#. translators: %s $error_message
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:119
+#, php-format
+msgid "Failed to handle_onboarding_complete for WhatsApp Utility Messages Integration. Exception: %s"
+msgstr ""
+
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:158
 msgid "Update Settings for WhatsApp Utility Messages Integration Successful."
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:101
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:164
 msgid "WhatsApp settings updated successfully"
 msgstr ""
 
 #. translators: %s $error_message
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:108
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:171
 #, php-format
 msgid "Failed to handle_update for WhatsApp Utility Messages Integration. Exception: %1%s"
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:146
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:209
 msgid "Update Integration Config in Settings for WhatsApp Utility Messages Integration Successful."
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:151
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:214
 msgid "Integration Config in WhatsApp settings updated successfully"
 msgstr ""
 
 #. translators: %s $error_message
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:158
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:221
 #, php-format
 msgid "Failed to handle_update_integration_config for WhatsApp Utility Messages Integration. Exception: %s"
 msgstr ""
 
 #. translators: %s $error_message
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:265
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:293
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:329
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:357
 #, php-format
 msgid "Failed to handle_uninstall for WhatsApp Utility Messages Integration. Exception: %1%s"
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:280
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:344
 msgid "Uninstall successful for WhatsApp Utility Messages Integration."
 msgstr ""
 
-#: includes/API/Plugin/WhatsAppSettings/Handler.php:286
+#: includes/API/Plugin/WhatsAppSettings/Handler.php:350
 msgid "WhatsApp integration successfully uninstalled"
 msgstr ""
 
@@ -1224,51 +1298,51 @@ msgid "Are you having a great experience with %1$s so far? Please consider %2$sl
 msgstr ""
 
 #. translators: Placeholders: %s - plugin name
-#: includes/Framework/Plugin.php:240
+#: includes/Framework/Plugin.php:256
 #, php-format
 msgid "You cannot clone instances of %s."
 msgstr ""
 
 #. translators: Placeholders: %s - plugin name
-#: includes/Framework/Plugin.php:251
+#: includes/Framework/Plugin.php:267
 #, php-format
 msgid "You cannot unserialize instances of %s."
 msgstr ""
 
 #. translators: Placeholders: %1$s - plugin name, %2$s - WooCommerce version number, %3$s - opening <a> HTML link tag, %4$s - closing </a> HTML link tag
-#: includes/Framework/Plugin.php:390
+#: includes/Framework/Plugin.php:406
 #, php-format
 msgid "Heads up! %1$s will soon discontinue support for WooCommerce %2$s. Please %3$supdate WooCommerce%4$s to take advantage of the latest updates and features."
 msgstr ""
 
 #. translators: Docs as in Documentation
-#: includes/Framework/Plugin.php:422
+#: includes/Framework/Plugin.php:438
 msgid "Docs"
 msgstr ""
 
-#: includes/Framework/Plugin.php:427
+#: includes/Framework/Plugin.php:443
 msgctxt "noun"
 msgid "Support"
 msgstr ""
 
-#: includes/Framework/Plugin.php:432
+#: includes/Framework/Plugin.php:448
 msgctxt "verb"
 msgid "Review"
 msgstr ""
 
 #. translators: System Requirement %1$s - Actual value; %2$s - required value.
-#: includes/Framework/Plugin.php:505
+#: includes/Framework/Plugin.php:521
 #, php-format
 msgid "%1$s - A minimum of %2$s is required."
 msgstr ""
 
 #. translators: System Requirement %1$s - Actual value; %2$s - required value.
-#: includes/Framework/Plugin.php:514
+#: includes/Framework/Plugin.php:530
 #, php-format
 msgid "Set as %1$s - %2$s is required."
 msgstr ""
 
-#: includes/Framework/Plugin.php:700
+#: includes/Framework/Plugin.php:716
 msgid "Configure"
 msgstr ""
 
@@ -1406,16 +1480,28 @@ msgstr ""
 msgid "Customer Events Post API call for Order id %1$s Failed due to failed connection "
 msgstr ""
 
+#. translators: %s $order_id
+#: includes/Handlers/WhatsAppExtension.php:198
+#, php-format
+msgid "Customer Events Post API call for Order id %1$s skipped: WhatsApp onboarding not complete."
+msgstr ""
+
 #. translators: %s $order_id %s $error_message
-#: includes/Handlers/WhatsAppExtension.php:236
+#: includes/Handlers/WhatsAppExtension.php:260
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s Failed %2$s "
 msgstr ""
 
 #. translators: %s $order_id
-#: includes/Handlers/WhatsAppExtension.php:245
+#: includes/Handlers/WhatsAppExtension.php:269
 #, php-format
 msgid "Customer Events Post API call for Order id %1$s Succeeded."
+msgstr ""
+
+#. translators: %s error message
+#: includes/Handlers/WhatsAppExtension.php:331
+#, php-format
+msgid "WhatsApp onboarding backfill HEAD request failed: %s"
 msgstr ""
 
 #: includes/Locale.php:181
@@ -1469,12 +1555,12 @@ msgstr ""
 msgid "Product excluded by wc_facebook_should_sync_product filter."
 msgstr ""
 
-#: includes/ProductSync/ProductValidator.php:400
+#: includes/ProductSync/ProductValidator.php:405
 msgid "Too many attributes selected for product. Use 4 or less."
 msgstr ""
 
 #. translators: 1: product language, 2: default language
-#: includes/ProductSync/ProductValidator.php:456
+#: includes/ProductSync/ProductValidator.php:461
 #, php-format
 msgid "Product is in language \"%1$s\" but only default language \"%2$s\" products are synced to the main catalog."
 msgstr ""
